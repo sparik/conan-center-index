@@ -133,7 +133,7 @@ class GStPluginsBaseConan(ConanFile):
             self.requires("pango/1.49.1")
 
     def build_requirements(self):
-        self.build_requires("meson/0.54.2")
+        self.build_requires("meson/0.59.0")
         if not tools.which("pkg-config"):
             self.build_requires("pkgconf/1.7.4")
         if self.settings.os == 'Windows':
@@ -550,6 +550,8 @@ class GStPluginsBaseConan(ConanFile):
         if not self.options.shared:
             self.cpp_info.components["gstreamer-plugins-base-1.0"].defines.append("GST_PLUGINS_BASE_STATIC")
             self.cpp_info.components["gstreamer-plugins-base-1.0"].requires.extend(gst_plugins)
+        else:
+            self.cpp_info.components["gstreamer-plugins-base-1.0"].bindirs.append(gst_plugin_path)
         self.cpp_info.components["gstreamer-plugins-base-1.0"].set_property("pkg_config_custom_content", pkgconfig_custom_content)
 
         self.cpp_info.components["gstreamer-allocators-1.0"].names["pkg_config"] = "gstreamer-allocators-1.0"
@@ -613,6 +615,7 @@ class GStPluginsBaseConan(ConanFile):
             if self.settings.os in ["iOS", "tvOS", "watchOS"]:
                 self.cpp_info.components["gstreamer-gl-1.0"].frameworks.extend(["CoreGraphics", "UIkit"])
             self.cpp_info.components["gstreamer-gl-1.0"].includedirs = [os.path.join(self.package_folder, "include"), gst_include_path]
+            self.cpp_info.components["gstreamer-gl-1.0"].includedirs.append(os.path.join(gst_plugin_path, "include"))
             self.cpp_info.components["gstreamer-gl-1.0"].set_property("pkg_config_custom_content", gl_custom_content)
 
             self.cpp_info.components["gstreamer-gl-prototypes-1.0"].names["pkg_config"] = "gstreamer-gl-prototypes-1.0"
